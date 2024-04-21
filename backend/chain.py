@@ -31,7 +31,6 @@ from langchain_core.runnables import (
 from langchain_fireworks import ChatFireworks
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
-from langsmith import Client
 
 RESPONSE_TEMPLATE = """\
 You are an expert programmer and problem-solver, tasked with answering any question \
@@ -100,9 +99,6 @@ Chat History:
 {chat_history}
 Follow Up Input: {question}
 Standalone Question:"""
-
-
-client = Client()
 
 app = FastAPI()
 app.add_middleware(
