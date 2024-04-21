@@ -33,6 +33,7 @@ const MODEL_TYPES = [
   "google_gemini_pro",
   "fireworks_mixtral",
   "cohere_command",
+  "local_ollama",
 ];
 
 const defaultLlmValue =
@@ -261,6 +262,7 @@ export function ChatWindow(props: { conversationId: string }) {
                   Mixtral (via Fireworks.ai)
                 </option>
                 <option value="cohere_command">Cohere</option>
+                <option value="local_ollama">Ollama</option>
               </Select>
             )}
           </div>

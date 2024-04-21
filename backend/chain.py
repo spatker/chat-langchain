@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from ingest import get_embeddings_model
 from langchain_anthropic import ChatAnthropic
+from langchain_community.chat_models import ChatOllama
 from langchain_community.chat_models import ChatCohere
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
@@ -204,6 +205,7 @@ def create_chain(llm: LanguageModelLike, retriever: BaseRetriever) -> Runnable:
             anthropic_claude_3_sonnet=default_response_synthesizer,
             fireworks_mixtral=default_response_synthesizer,
             google_gemini_pro=default_response_synthesizer,
+            local_ollama=default_response_synthesizer,
             cohere_command=cohere_response_synthesizer,
         )
         | StrOutputParser()
@@ -240,6 +242,8 @@ cohere_command = ChatCohere(
     temperature=0,
     cohere_api_key=os.environ.get("COHERE_API_KEY", "not_provided"),
 )
+local_ollama_llm = "llama2"
+local_ollama = ChatOllama(model=local_ollama_llm)
 llm = gpt_3_5.configurable_alternatives(
     # This gives this field an id
     # When configuring the end runnable, we can then use this id to configure this field
@@ -249,8 +253,9 @@ llm = gpt_3_5.configurable_alternatives(
     fireworks_mixtral=fireworks_mixtral,
     google_gemini_pro=gemini_pro,
     cohere_command=cohere_command,
+    local_ollama=local_ollama,
 ).with_fallbacks(
-    [gpt_3_5, claude_3_sonnet, fireworks_mixtral, gemini_pro, cohere_command]
+    [gpt_3_5, claude_3_sonnet, fireworks_mixtral, gemini_pro, cohere_command, local_ollama]
 )
 
 retriever = get_retriever()
